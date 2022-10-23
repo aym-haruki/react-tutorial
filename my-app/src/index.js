@@ -116,6 +116,7 @@ class Game extends React.Component {
       winner = winnerRes.winner;
       winnerIdx = winnerRes.idx;
     }
+    console.log(current.squares.length, history.length);
 
     const moves = history.map((step, move) => {
       const cell = culculateCellInfo(step.idx);
@@ -142,7 +143,11 @@ class Game extends React.Component {
     if (winner) {
       status = winner + " の勝ちです";
     } else {
-      status = "次: " + (this.state.xIsNext ? "X" : "O");
+      if(current.squares.length === history.length - 1) {
+        status = "引き分けです";
+      } else {
+        status = "次: " + (this.state.xIsNext ? "X" : "O");
+      }
     }
 
     return (
