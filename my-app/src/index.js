@@ -43,13 +43,21 @@ class Board extends React.Component {
   }
 }
 
+class Cell {
+  constructor(row, col) {
+    this.row = row;
+    this.col = col;
+  }
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       history: [
         {
-          squares: Array(9).fill(null)
+          squares: Array(9).fill(null),
+          idx: null,
         }
       ],
       stepNumber: 0,
@@ -68,7 +76,8 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([
         {
-          squares: squares
+          squares: squares,
+          idx: i
         }
       ]),
       stepNumber: history.length,
@@ -89,9 +98,12 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
+      const cell = culculateCellInfo(step.idx);
+      let desc = '最初から始める';
+      if(move) {
+        desc = '#' + move + ' へ移動 (' + cell.row + ',' + cell.col + ')';
+      }
+
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -127,6 +139,24 @@ class Game extends React.Component {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game />);
+
+function culculateCellInfo(i) {
+  const info = [
+    new Cell(1, 1),
+    new Cell(1, 2),
+    new Cell(1, 3),
+    new Cell(2, 1),
+    new Cell(2, 2),
+    new Cell(2, 3),
+    new Cell(3, 1),
+    new Cell(3, 2),
+    new Cell(3, 3),
+  ];
+
+  if(i === null) return null;
+
+  return info[i];
+}
 
 function calculateWinner(squares) {
   const lines = [
