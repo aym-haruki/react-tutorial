@@ -16,37 +16,34 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
+        key ={i}
       />
     );
   }
 
   render() {
-    return (
+
+    var list = [];
+
+    var data = [
+      [0,1,2],
+      [3,4,5],
+      [6,7,8],
+    ];
+  
+    for(let i = 0; i < data.length; i++){
+      let row = [];
+      for(let j = 0; j < data[i].length; j++){
+        row.push(this.renderSquare(data[i][j]));
+      }
+      list.push(<div className="board-row" key ={i}>{row}</div>);
+    }
+  
+    return(
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {list}
       </div>
     );
-  }
-}
-
-class Cell {
-  constructor(row, col) {
-    this.row = row;
-    this.col = col;
   }
 }
 
@@ -146,6 +143,13 @@ class Game extends React.Component {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game />);
+
+class Cell {
+  constructor(row, col) {
+    this.row = row;
+    this.col = col;
+  }
+}
 
 function culculateCellInfo(i) {
   const info = [
