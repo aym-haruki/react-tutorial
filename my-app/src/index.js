@@ -104,6 +104,13 @@ class Game extends React.Component {
         desc = '#' + move + ' へ移動 (' + cell.row + ',' + cell.col + ')';
       }
 
+      if(this.state.stepNumber === move) {
+        return (
+          <li key={move}>
+            <button onClick={() => this.jumpTo(move)}><b>{desc}</b></button>
+          </li>
+        );  
+      } 
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
