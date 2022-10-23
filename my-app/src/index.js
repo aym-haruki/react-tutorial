@@ -10,8 +10,27 @@ function Square(props) {
   );
 }
 
+function WinSquare(props) {
+  return (
+    <button className="win-square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
+
 class Board extends React.Component {
   renderSquare(i) {
+    // 勝利マスへ色付け
+    if(this.props.winnerIdx === i) {
+      return (
+        <WinSquare
+        value={this.props.squares[i]}
+        onClick={() => this.props.onClick(i)}
+        key ={i}
+      />
+      );
+    }
+    // 通常マス
     return (
       <Square
         value={this.props.squares[i]}
@@ -22,9 +41,7 @@ class Board extends React.Component {
   }
 
   render() {
-
     var list = [];
-
     var data = [
       [0,1,2],
       [3,4,5],
@@ -92,7 +109,13 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winnerRes = calculateWinner(current.squares);
+    let winner = null;
+    let winnerIdx = null;
+    if(winnerRes !== null) {
+      winner = winnerRes.winner;
+      winnerIdx = winnerRes.idx;
+    }
 
     const moves = history.map((step, move) => {
       const cell = culculateCellInfo(step.idx);
@@ -127,6 +150,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            winnerIdx={winnerIdx}
             onClick={i => this.handleClick(i)}
           />
         </div>
@@ -148,6 +172,13 @@ class Cell {
   constructor(row, col) {
     this.row = row;
     this.col = col;
+  }
+}
+
+class WinnerRes {
+  constructor(winner, idx) {
+    this.winner = winner;
+    this.idx = idx;
   }
 }
 
@@ -183,7 +214,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return new WinnerRes(squares[a], a);
     }
   }
   return null;
